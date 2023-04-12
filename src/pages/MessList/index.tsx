@@ -11,9 +11,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Mess} from '../../types/mess';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {BrowseMessScreenProps} from '../../types/navigation';
+import {logo_small} from '../../images';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function MessList({navigation}: BrowseMessScreenProps) {
   const [messes, setMesses] = useState<Mess[] | null>(null);
@@ -33,7 +34,10 @@ export default function MessList({navigation}: BrowseMessScreenProps) {
   return (
     <View className="bg-white p-8 px-4">
       <View className="flex flex-row justify-between items-center">
-        <Text className="text-3xl text-black font-bold">Explore Messes</Text>
+        <View className="flex flex-row justify-start items-center gap-x-2">
+          <Image source={{uri: logo_small}} className="w-[40px] h-[40px]" />
+          <Text className="text-2xl text-black font-bold">Discover</Text>
+        </View>
         <AntIcon
           name="key"
           color="#000"
@@ -48,36 +52,31 @@ export default function MessList({navigation}: BrowseMessScreenProps) {
         placeholderTextColor="gray"
         value={searchTerm}
       />
-      <ScrollView className="mt-8">
-        {!!messes ? (
-          messes.map(mess => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Mess', {messId: mess.id})}
-              key={Math.random().toString(16)}
-              className="border-slate-300 my-4 rounded-lg flex flex-col justify-start border">
-              <Image
-                source={{uri: mess.photo}}
-                className="w-full h-48 rounded-t-lg"
-              />
-              <View className="flex flex-row justify-between">
-                <View className="p-4">
-                  <Text className="text-black text-lg font-bold">
+      <ScrollView className="mt-4">
+        <View className="flex flex-row justify-between flex-wrap gap-1 gap-y-4 pb-24">
+          {!!messes ? (
+            messes.map(mess => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Mess', {messId: mess.id})}
+                key={Math.random().toString(16)}
+                className="border-slate-300 rounded-xl z-20 h-[30vh] max-h-fit flex flex-col justify-start border w-[45vw]">
+                <Image
+                  source={{uri: mess.photo}}
+                  className="w-full rounded-xl h-full"
+                />
+                <LinearGradient
+                  colors={['transparent', 'rgba(0, 0, 0, 1)']}
+                  className="flex flex-col justify-end absolute z-10 bottom-0 w-full h-full rounded-xl p-2 px-4">
+                  <Text className="text-white text-lg font-bold">
                     {mess.name}
                   </Text>
-                  <Text className="text-slate-400 text-md">{mess.address}</Text>
-                </View>
-                <View className="p-4 flex flex-row items-center">
-                  <Icon name="rupee" color="green" size={16} />
-                  <Text className="text-lg font-bold text-green-700">
-                    {mess.price}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <ActivityIndicator size={50} color="#aaaaff" />
-        )}
+                </LinearGradient>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <ActivityIndicator size={50} color="#aaaaff" />
+          )}
+        </View>
       </ScrollView>
     </View>
   );
