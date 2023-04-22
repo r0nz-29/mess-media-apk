@@ -1,13 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {LoginScreenProps} from '../../types/navigation';
-import {_login, _userLoggedIn} from '../../api';
+import {SignupScreenProps} from '../../types/navigation';
+import {_register, _userLoggedIn} from '../../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login({navigation}: LoginScreenProps) {
-  const [Email, setEmail] = React.useState('');
-  const [Password, setPassword] = React.useState('');
+export default function Signup({navigation}: SignupScreenProps) {
+  const [Name, setName] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
 
   useEffect(() => {
     async function check() {
@@ -25,17 +26,17 @@ export default function Login({navigation}: LoginScreenProps) {
     check();
   }, [navigation]);
 
-  async function login() {
-    const data = await _login({Email, Password});
+  async function register() {
+    const data = await _register({Name, Email, Password});
     if (!data) {
-      console.log('error occured');
+      setName('');
       setEmail('');
       setPassword('');
+      Alert.alert('Error', 'Some error occured, please try again later');
       return;
     }
-
     AsyncStorage.setItem('mess-media-user', JSON.stringify({...data}));
-    Alert.alert('Success', 'Logged in', [
+    Alert.alert('Success', 'Registered successfully', [
       {
         text: 'OK',
         onPress: () => navigation.push('MessList'),
@@ -52,14 +53,25 @@ export default function Login({navigation}: LoginScreenProps) {
           size={36}
           onPress={() => navigation.goBack()}
         />
-        <Text className="font-bold text-black text-6xl pt-8 mt-8">Login</Text>
+        <Text className="font-bold text-black text-6xl pt-8 mt-8">
+          Create an account
+        </Text>
         <Text className="text-black text-xl mt-4">
           Enter email and password
         </Text>
         <TextInput
           className="text-black text-xl border-b-2 rounded-sm border-gray-300 focus:border-red-400 mt-8"
+          onChangeText={setName}
+          placeholder="Full Name"
+          id="name"
+          placeholderTextColor="gray"
+          value={Name}
+        />
+        <TextInput
+          className="text-black text-xl border-b-2 rounded-sm border-gray-300 focus:border-red-400 mt-8"
           onChangeText={setEmail}
           placeholder="Email"
+          id="email"
           placeholderTextColor="gray"
           value={Email}
         />
@@ -67,23 +79,16 @@ export default function Login({navigation}: LoginScreenProps) {
           className="text-black text-xl border-b-2 rounded-sm border-gray-300 focus:border-red-400 mt-8"
           onChangeText={setPassword}
           placeholder="Password"
+          id="password"
           placeholderTextColor="gray"
           value={Password}
         />
-        <View className="mt-4 flex flex-row gap-x-2">
-          <Text className="text-gray-500">Don't have an account?</Text>
-          <Text
-            className="text-red-500"
-            onPress={() => navigation.push('Signup')}>
-            Register Now!
-          </Text>
-        </View>
       </View>
       <TouchableOpacity
         className="w-full p-4 rounded-full bg-red-400"
-        onPress={login}>
+        onPress={register}>
         <Text className="text-white text-xl text-center font-bold">
-          Continue
+          Register
         </Text>
       </TouchableOpacity>
     </View>

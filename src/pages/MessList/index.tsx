@@ -9,16 +9,33 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import {Mess} from '../../types/mess';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 import {BrowseMessScreenProps} from '../../types/navigation';
-import {logo_small} from '../../images';
 import LinearGradient from 'react-native-linear-gradient';
+import Header from '../../components/Header';
 
 export default function MessList({navigation}: BrowseMessScreenProps) {
   const [messes, setMesses] = useState<Mess[] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    axios
+      .get('https://mess-media.cyclic.app/api/mess')
+      .then(({data}) => {
+        if (data.success) {
+          setRefreshing(false);
+          setMesses(data.data);
+        }
+      })
+      .catch(error => {
+        setRefreshing(false);
+        console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -33,18 +50,7 @@ export default function MessList({navigation}: BrowseMessScreenProps) {
 
   return (
     <View className="bg-white p-8 px-4">
-      <View className="flex flex-row justify-between items-center">
-        <View className="flex flex-row justify-start items-center gap-x-2">
-          <Image source={{uri: logo_small}} className="w-[40px] h-[40px]" />
-          <Text className="text-2xl text-black font-bold">Discover</Text>
-        </View>
-        <AntIcon
-          name="key"
-          color="#000"
-          size={24}
-          onPress={() => navigation.navigate('Login')}
-        />
-      </View>
+      <Header title="Discover" navigation={navigation} />
       <TextInput
         className="text-black text-lg border rounded-xl border-gray-300 mt-4 px-4"
         onChangeText={setSearchTerm}
@@ -52,7 +58,11 @@ export default function MessList({navigation}: BrowseMessScreenProps) {
         placeholderTextColor="gray"
         value={searchTerm}
       />
-      <ScrollView className="mt-4">
+      <ScrollView
+        className="mt-6"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View className="flex flex-row justify-between flex-wrap gap-1 gap-y-4 pb-24">
           {!!messes ? (
             messes.map(mess => (

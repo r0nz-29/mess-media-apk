@@ -2,14 +2,12 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import Login from '../Login';
 import MessList from '../MessList';
 import React from 'react';
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {HomeScreenProps, NavigationRoutesWithParams} from "../../types/navigation";
+import {HomeScreenProps} from '../../types/navigation';
 
 const pages = [
-  {label: 'Login Page', Component: Login, screen: "Login"},
-  {label: 'Browse Messes', Component: MessList, screen: "MessList"},
+  {label: 'Login Page', Component: Login, screen: 'Login'},
+  {label: 'Browse Messes', Component: MessList, screen: 'MessList'},
 ];
-
 
 export default function Home({navigation}: HomeScreenProps) {
   return (
