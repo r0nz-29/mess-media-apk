@@ -10,7 +10,7 @@
 
 
 Instructor:
-this project is done under  Mr. upendra singh sir
+this project is done under  [Mr. upendra singh sir](https://onlyforyou.vercel.app)
 
 Developed By:
 Raunit Shrivastava , Rohit Singh Tomar , Shivam Choudhary,Aryan Tiwari
